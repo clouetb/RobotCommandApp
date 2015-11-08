@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="keywords" content="JavaScript, WebRTC" />
+<meta name="description" content="WebRTC codelab" />
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 	data: gap: https://ssl.gstatic.com 'unsafe-eval';
+	style-src 'self' 'unsafe-inline'; media-src *; connect-src *">
+<title>WebRTC codelab: step 2</title>
+	<style>
+    #remoteVideos video {
+        height: 150px;
+    }
+    #localVideo {
+        height: 150px;
+    }
+	</style>
+	<script src="js/simplewebrtc.latest.js"></script> 
+	<script src="cordova.js"></script>
+</head>
+
+<body>
+
+        <video id="localVideo"></video>
+        <div id="remoteVideos"></div>
+
+<script type="text/javascript">
+  window.addEventListener("load", function () {
+    console.log("iOSRTCApp >>> DOM loaded");
+
+    document.addEventListener("deviceready", function () {
+      console.log("iOSRTCApp >>> deviceready event");
+
+      // if iOS devices
+      if (window.device.platform === "iOS") {
+        cordova.plugins.iosrtc.debug.enable("*");
+
+        // Pollute global namespace with WebRTC stuff.
+        cordova.plugins.iosrtc.registerGlobals();
+		console.log("iOSRTCApp >>> Globals registered");
+      }
+	
+	  var webrtc = new SimpleWebRTC({
+	      // the id/element dom element that will hold "our" video
+	      localVideoEl: 'localVideo',
+	      // the id/element dom element that will hold remote videos
+	      remoteVideosEl: 'remoteVideos',
+	      // immediately ask for camera access
+	      autoRequestMedia: true,
+		  detectSpeakingEvents: false,
+		  debug: true
+	  });
+	  
+	  // we have to wait until it's ready
+	  webrtc.on('readyToCall', function () {
+	      // you can name it anything
+	      webrtc.joinRoom('PrivateRoomForMyRobot_BCL');
+	  });
+
+    });  // End of ondeviceready.
+  });  // End of onload.
+
+
+
+</script>
+
+</body>
+
+</html>

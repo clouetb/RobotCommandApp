@@ -23,6 +23,7 @@
     </feature>
     <allow-intent href="itms:*" />
     <allow-intent href="itms-apps:*" />
+    <preference name="Orientation" value="all" />
     <name>Robot</name>
     <description>
         Robot command application for mobile and browser usage.

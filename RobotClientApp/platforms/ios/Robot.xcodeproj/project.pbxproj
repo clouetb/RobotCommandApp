@@ -98,7 +98,7 @@
 		1AD3DDF0D719408D9CDE42D8 /* iosrtcPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = unknown; name = iosrtcPlugin.swift; path = "cordova-plugin-iosrtc/iosrtcPlugin.swift"; sourceTree = "<group>"; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Robot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Robot.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Robot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Robot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D781400B8034FAA8AF2843B /* CDVDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVDevice.m; path = "cordova-plugin-device/CDVDevice.m"; sourceTree = "<group>"; };
 		1EBD1AF037D24AB9A3EBFDEC /* RTCSessionDescriptionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTCSessionDescriptionDelegate.h; path = "cordova-plugin-iosrtc/RTCSessionDescriptionDelegate.h"; sourceTree = "<group>"; };
 		20CDA27591FA4D419F215C6B /* AVFoundation.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -181,7 +181,7 @@
 		F487EDC7C2084AB18C790C58 /* CoreMedia.framework */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		F5CB755A23594F3BB1CCB49D /* RTCTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTCTypes.h; path = "cordova-plugin-iosrtc/RTCTypes.h"; sourceTree = "<group>"; };
 		F6AB9360543F4079853CA773 /* cordova-plugin-iosrtc-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "cordova-plugin-iosrtc-Bridging-Header.h"; path = "cordova-plugin-iosrtc/cordova-plugin-iosrtc-Bridging-Header.h"; sourceTree = "<group>"; };
-		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "Robot/config.xml"; sourceTree = "<group>"; };
+		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = Robot/config.xml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,7 +222,7 @@
 				1D3623250D0F684500981E51 /* AppDelegate.m */,
 			);
 			name = Classes;
-			path = "Robot/Classes";
+			path = Robot/Classes;
 			sourceTree = SOURCE_ROOT;
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -258,7 +258,7 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
-			path = "Robot";
+			path = Robot;
 			sourceTree = "<group>";
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
@@ -269,7 +269,7 @@
 				8D1107310486CEB800E47090 /* Robot-Info.plist */,
 			);
 			name = Resources;
-			path = "Robot/Resources";
+			path = Robot/Resources;
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -349,7 +349,7 @@
 				F6AB9360543F4079853CA773 /* cordova-plugin-iosrtc-Bridging-Header.h */,
 			);
 			name = Plugins;
-			path = "Robot/Plugins";
+			path = Robot/Plugins;
 			sourceTree = SOURCE_ROOT;
 		};
 		308D052D1370CCF300D202BF /* icons */ = {
@@ -417,8 +417,8 @@
 			dependencies = (
 				301BF551109A68C00062928A /* PBXTargetDependency */,
 			);
-			name = "Robot";
-			productName = "Robot";
+			name = Robot;
+			productName = Robot;
 			productReference = 1D6058910D05DD3D006BFB54 /* Robot.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -589,7 +589,7 @@
 					"-weak-lSystem",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "Robot";
+				PRODUCT_NAME = Robot;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -622,7 +622,7 @@
 					"-weak-lSystem",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "Robot";
+				PRODUCT_NAME = Robot;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

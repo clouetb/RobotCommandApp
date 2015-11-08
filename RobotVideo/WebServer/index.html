@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="simplewebrtc.latest.js"></script>
+</head>
+
+<body>
+
+<div id="remoteVideo"></div>
+<div id="localVideo" muted></div>
+
+
+<script>
+var webrtc = new SimpleWebRTC({
+	localVideoEl: 'localVideo',
+	remoteVideosEl: 'remoteVideo',
+	autoRequestMedia: true
+	//peerConnectionConfig: {'iceServers':[{'url':'turn:robot-pi.local', 'username':'test', 'credential':'test'}]}
+});
+
+webrtc.on('readyToCall', function () {
+	webrtc.joinRoom('PrivateRoomForMyRobot_BCL');
+});
+</script>
+
+</body>
+
+</html>

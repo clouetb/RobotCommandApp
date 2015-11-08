@@ -1,0 +1,14 @@
+{
+    "name": "server",
+    "version": "0.0.1",
+    "description": "Simple static https server",
+    "author": "Benoit Clouet <benoit.clouet@gmail.com>",
+    "dependencies": {
+        "https": ">=1.0.0",
+        "node-static": ">=0.7.7"
+    },
+    "main": "server",
+    "engines": {
+        "node": ">=4.2.1"
+    }
+}

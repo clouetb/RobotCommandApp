@@ -20,6 +20,7 @@ Aims at getting a Raspberry PI to act as a robot with video.
 ###Implement deployment tooling
 - On the mobile UI
 - Basic deployment automation on the RPi
+
 ###For the mobile UI
 - See how to implement sliders for driving the tank threads
     Deal with the freeze of the events when fingers are touching the screen

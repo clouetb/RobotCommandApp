@@ -31,6 +31,7 @@ Aims at getting a Raspberry PI to act as a robot with video.
 - Enable sound output (input is provided via the webcam)
 - Enable some kind of authentication for the tornado server (must be supported on the client side)
     ~~Maybe a certificate based authentication ?~~ 
+
     See if OAuth could be eligible http://www.tornadoweb.org/en/stable/auth.html and https://github.com/oauth-io/oauth-phonegap)
 
 ###For the infrastructure

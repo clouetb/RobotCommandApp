@@ -26,7 +26,7 @@ case "$1" in
   restart)
         echo -n "Restarting daemon: "$NAME
         start-stop-daemon --stop  --oknodo --retry 30 --pidfile $PIDFILE
-        start-stop-daemon --verbose --make-pidfile --background --start --pidfile $PIDFILE --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS > $LOGFILE 2>&1"
+        start-stop-daemon --make-pidfile --background --start --pidfile $PIDFILE --startas /bin/bash -- -c "exec $DAEMON $DAEMON_ARGS > $LOGFILE 2>&1"
         echo "."
         ;;
 

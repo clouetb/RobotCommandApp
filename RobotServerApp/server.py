@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import ssl
 import tornado.web
 import tornado.websocket
@@ -9,8 +10,9 @@ import sys
 
 from tornado.options import define, options, parse_command_line
 
+dirname = os.path.dirname(__file__)
 define("port", default=8888, help="run on the given port", type=int)
-ssl_stuff_dir = "ssl_stuff"
+ssl_stuff_dir = os.path.join(dirname, "ssl_stuff")
 
 ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 ssl_ctx.load_cert_chain(os.path.join(ssl_stuff_dir, "server.crt"),
@@ -51,17 +53,16 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 app = tornado.web.Application([
         (r'/socket', WebSocketHandler),
         #(r'/', IndexHandler),
-        (r"/(.*)", tornado.web.StaticFileHandler, {"path": "templates"})
+        (r"/(.*)", tornado.web.StaticFileHandler, {"path": os.path.join(dirname,"templates")})
     ], debug=True)
 http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-
-log = logging.getLogger("tornado.application")
-log.setLevel(logging.DEBUG)
 
 
 if __name__ == '__main__':
     try:
         parse_command_line()
+        log = logging.getLogger("tornado.application")
+        log.setLevel(logging.DEBUG)
         http_server.listen(options.port)
         log.debug("Starting Tornado server")
         tornado.ioloop.IOLoop.instance().start()

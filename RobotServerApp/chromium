@@ -1,0 +1,44 @@
+#!/bin/sh
+# Quick start-stop-daemon example, derived from Debian /etc/init.d/ssh
+set -e
+
+# Must be a valid filename
+NAME=chromium-browser
+PIDFILE=/var/run/$NAME/$NAME.pid
+LOGFILE=/var/log/$NAME/$NAME.log
+DAEMON=/usr/bin/chromium-browser
+DAEMON_ARGS="--kiosk https://robot-pi.local:8888/index.html"
+
+export PATH="${PATH:+$PATH:}/usr/sbin:/sbin:/usr/bin"
+export DISPLAY=:0
+
+xhost +
+
+case "$1" in
+  start)
+        echo -n "Starting daemon: "$NAME
+        start-stop-daemon --make-pidfile --background --start --pidfile $PIDFILE --startas /bin/bash -- -c "DISPLAY=:0 exec $DAEMON $DAEMON_ARGS > $LOGFILE 2>&1"
+        echo "."
+        ;;
+  stop)
+        echo -n "Stopping daemon: "$NAME
+        start-stop-daemon --stop --oknodo --pidfile $PIDFILE
+        echo "."
+        ;;
+  restart)
+        echo -n "Restarting daemon: "$NAME
+        start-stop-daemon --stop  --oknodo --retry 30 --pidfile $PIDFILE
+        start-stop-daemon --make-pidfile --background --start --pidfile $PIDFILE --startas /bin/bash -- -c "DISPLAY=:0 exec $DAEMON $DAEMON_ARGS > $LOGFILE 2>&1"
+        echo "."
+        ;;
+  refresh)
+        WID=$(xdotool search --onlyvisible --class chromium|head -1)
+        xdotool windowactivate $WID
+        xdotool key ctrl+F5
+        ;;
+  *)
+        echo "Usage: "$1" {start|stop|restart}"
+        exit 1
+esac
+
+exit 0

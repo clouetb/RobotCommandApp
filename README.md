@@ -19,19 +19,21 @@ Aims at getting a Raspberry PI to act as a robot with video.
 ##Todo
 ###Implement deployment tooling
 - On the mobile UI
-- Basic deployment automation on the RPi
+- Basic deployment automation on the RPi (see if we can get a more efficient process through Fabric http://docs.fabfile.org/en/1.10/)
 
 ###For the mobile UI
 - See how to implement sliders for driving the tank threads
-    Deal with the freeze of the events when fingers are touching the screen
+    ~~Deal with the freeze of the events when fingers are touching the screen~~ Should have been adressed so far.
 - Implement the correct lifecycle for re-enabling connection when leaving/re-entering the app
 
 ###For the Rpi UI
 - Implement startup UI (See http://blogs.wcode.org/2013/09/howto-boot-your-raspberry-pi-into-a-fullscreen-browser-kiosk/)
 - Enable sound output (input is provided via the webcam)
 - Enable some kind of authentication for the tornado server (must be supported on the client side)
-    Maybe a certificate based authentication ?
+    ~~Maybe a certificate based authentication ?~~ 
+
+    See if OAuth could be eligible http://www.tornadoweb.org/en/stable/auth.html and https://github.com/oauth-io/oauth-phonegap)
 
 ###For the infrastructure
 - Become independent of the public signalmaster for security reasons
-- Deal with firewalls traversal for enabling communication while not on the same network
+- Deal with firewalls traversal for enabling communication while not on the same network (https://github.com/miniupnp/miniupnp/)?

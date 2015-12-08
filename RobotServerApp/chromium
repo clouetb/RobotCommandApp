@@ -7,7 +7,7 @@ NAME=chromium-browser
 PIDFILE=/var/run/$NAME/$NAME.pid
 LOGFILE=/var/log/$NAME/$NAME.log
 DAEMON=/usr/bin/chromium-browser
-DAEMON_ARGS="--kiosk https://robot-pi.local:8888/index.html"
+DAEMON_ARGS="--kiosk https://robot-pi.bclouet.eu:8888/index.html"
 
 export PATH="${PATH:+$PATH:}/usr/sbin:/sbin:/usr/bin"
 export DISPLAY=:0

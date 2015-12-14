@@ -39,7 +39,7 @@ Date.prototype.yyyymmdd = function() {
 };
 
 setInterval(function() {
-    //d = new Date();
+    d = new Date();
     //postMessage("Speed L " + leftFinger.offset + " R " + rightFinger.offset + " " + d.yyyymmdd());
     socket.send(JSON.stringify({
         "speed":[leftFinger.offset, 
@@ -48,17 +48,16 @@ setInterval(function() {
 }, Math.round(1000/fps));
 
 function initCommunication() {
-    socket = new WebSocket("wss://robot-pi.bclouet.eu:8888/socket");
+    socket = new WebSocket("wss://" + location.host + "/websocket");
     socket.onopen = function() {
         socket.send(JSON.stringify({
             "ping": ""
         }));
     };
-/*
     socket.onmessage = function(evt) {
         postMessage("Message received: " + evt.data);
     };
-*/
+
 }
 
 initCommunication();

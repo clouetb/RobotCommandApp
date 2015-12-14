@@ -3,6 +3,7 @@ import logging
 import tornado.websocket
 
 log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
@@ -14,8 +15,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     # Overridden for dealing with authentication
     @tornado.web.asynchronous
     def get(self, *args, **kwargs):
+        log.debug("Incoming request %s", self.request)
         # Fail if not authenticated
         if not self.current_user:
+            log.warning("Unauthorized user with request %s", self.request)
             self.set_status(401)
             self.finish("Unauthorized")
             return
@@ -28,6 +31,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self, *args):
+        log.debug("Connection incomming")
         self.stream.set_nodelay(True)
 
     def ping(self, value):

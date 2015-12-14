@@ -8,17 +8,19 @@ log.setLevel(logging.DEBUG)
 
 redirect_url = "https://robot-pi.bclouet.eu:8888/auth"
 
-class GoogleOAuth2LoginHandler(tornado.web.RequestHandler,
-                               tornado.auth.GoogleOAuth2Mixin):
+
+class LoginHandler(tornado.web.RequestHandler,
+                   tornado.auth.GoogleOAuth2Mixin):
 
     # Called twice during the auth process
     @tornado.gen.coroutine
     def get(self):
+        # Authenticated user comes with a code argument
         if not self.get_argument("code", False):
             # 1st call : user is NOT authenticated and should be sent to the auth page at Google
             log.debug("Unauthenticated user, sending to auth page, then sending to '%s'", self.get_argument("next", "/ (default param)"))
             # Save the URL the user was asking for
-            self.set_secure_cookie("next", self.get_argument("next", "/index.html"))
+            self.set_cookie("next", self.get_argument("next", "/index.html"))
             # Send user to the auth page
             yield self.authorize_redirect(
                 # Callback URL (should be this same URL)
@@ -32,7 +34,6 @@ class GoogleOAuth2LoginHandler(tornado.web.RequestHandler,
                 extra_params={"approval_prompt": "auto"})
         else:
             # 2nd call : user comes back from auth page at Google, with an OAuth code
-            log.debug("Authenticated user %s", self.get_argument("code", False))
             # Get user reference at Google OAuth website
             user = yield self.get_authenticated_user(
                                         redirect_uri=redirect_url,
@@ -54,6 +55,15 @@ class GoogleOAuth2LoginHandler(tornado.web.RequestHandler,
             # Save the username as a secure cookie
             self.set_secure_cookie("user", user["email"])
             # Send the user to the URL he intended to reach before having to authenticate
-            self.redirect(self.get_secure_cookie("next", False) or "/index.html")
+            next_url = self.get_cookie("next")
+            log.debug("Next url is %s", next_url)
+            self.redirect(next_url)
 
+
+class LogoutHandler(tornado.web.RequestHandler):
+
+    @tornado.gen.coroutine
+    def get(self):
+        self.clear_all_cookies()
+        self.write("You are now logged out")
 

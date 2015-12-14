@@ -65,7 +65,7 @@
     <body>
         <form action="">
           <label for="GET-name">Robot location :</label>
-          <input id="GET-name" type="text" name="name" value="robot-pi.bclouet.eu:8888">
+          <input id="GET-name" type="text" name="name" value="https://robot-pi.bclouet.eu:8888">
           <input id="submit" type="submit" value="Connect">
           <input id="cleanup" type="submit" value="Cleanup">
         </form>
@@ -74,12 +74,12 @@
         var buttonCleanup = document.getElementById("cleanup");
         buttonSubmit.onclick = function (){
             var robotLocation = document.getElementById("GET-name").value;
-            window.location = "https://" + robotLocation + "/ios/index.html";
+            window.location = robotLocation + "/ios/index.html";
             return false;
         }
         buttonCleanup.onclick = function (){
             var robotLocation = document.getElementById("GET-name").value;
-            window.location = "https://" + robotLocation + "/logout";
+            window.location = robotLocation + "/logout";
             return false;
         }
         </script>

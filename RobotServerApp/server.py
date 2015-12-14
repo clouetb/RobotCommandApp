@@ -5,16 +5,16 @@ import signal
 import ssl
 import sys
 import json
+import base64
 import tornado.httpserver
 import tornado.websocket
 
-from tornado.web import RedirectHandler
 from tornado.options import define, options, parse_command_line
 
 from port_forwarder import enable_port_forwarding, disable_port_forwarding
 from websocket_handler import WebSocketHandler
-from login_handler import GoogleOAuth2LoginHandler
-from file_handler import CustomStaticFileHandler
+from auth_handlers import LoginHandler, LogoutHandler
+from request_handlers import CustomStaticFileHandler
 
 # Current dir
 dirname = os.path.dirname(__file__)
@@ -36,7 +36,8 @@ with open(os.path.join(dirname, "robot-pi-google-oauth2.json")) as json_data:
 
 # Settings
 settings = dict(
-    cookie_secret=google_oauth2_settings["cookie_secret"],
+    compress_response=True,
+    cookie_secret=base64.b64encode(os.urandom(50)).decode('ascii'),
     login_url="/auth",
     debug=True,
     xsrf_cookies=True,
@@ -48,9 +49,10 @@ settings = dict(
 
 # Application routes
 handlers = [
-    (r"/auth", GoogleOAuth2LoginHandler),
-    (r"/(.*)", CustomStaticFileHandler, {"path": os.path.join(dirname, "templates")}),
-    (r"/", RedirectHandler, {"url": "/index.html"}),
+    (r"/auth", LoginHandler),
+    (r"/logout", LogoutHandler),
+    (r"/ios/(.*)", CustomStaticFileHandler, {"path": os.path.join(dirname, "templates/ios")}),
+    (r"/robot/(.*)", CustomStaticFileHandler, {"path": os.path.join(dirname, "templates/robot")}),
     (r"/websocket", WebSocketHandler)
 ]
 
@@ -78,6 +80,7 @@ http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
 if __name__ == '__main__':
     parse_command_line()
     set_exit_handler(on_exit)
+    logging.getLogger("tornado.web").setLevel(logging.DEBUG)
     log = logging.getLogger("tornado.application")
     log.setLevel(logging.DEBUG)
     http_server.listen(options.port)

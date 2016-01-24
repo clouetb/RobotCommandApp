@@ -65,6 +65,7 @@
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
 		F7F8ED343E2243CAAC03CC63 /* PluginRTCPeerConnectionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE286D40FE54C239B9F8B6F /* PluginRTCPeerConnectionConfig.swift */; };
 		FF9F9C28C47641FE8A502DC8 /* libWebRTC-LATEST-Universal-Release.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D579F09BCA4CFF84AED3CA /* libWebRTC-LATEST-Universal-Release.a */; };
+		56A4239E49E94DC791B8AF47 /* Insomnia.m in Sources */ = {isa = PBXBuildFile; fileRef = 967CA22D66734C938BD55500 /* Insomnia.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +183,8 @@
 		F5CB755A23594F3BB1CCB49D /* RTCTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RTCTypes.h; path = "cordova-plugin-iosrtc/RTCTypes.h"; sourceTree = "<group>"; };
 		F6AB9360543F4079853CA773 /* cordova-plugin-iosrtc-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "cordova-plugin-iosrtc-Bridging-Header.h"; path = "cordova-plugin-iosrtc/cordova-plugin-iosrtc-Bridging-Header.h"; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = Robot/config.xml; sourceTree = "<group>"; };
+		967CA22D66734C938BD55500 /* Insomnia.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "Insomnia.m"; path = "nl.x-services.plugins.insomnia/Insomnia.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		F2066357925340E4A1A4C82B /* Insomnia.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Insomnia.h"; path = "nl.x-services.plugins.insomnia/Insomnia.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -347,6 +350,8 @@
 				D36D0BEECB304BCD8F243C42 /* RTCVideoSource.h */,
 				4630183A84EA47BF87A258A9 /* RTCVideoTrack.h */,
 				F6AB9360543F4079853CA773 /* cordova-plugin-iosrtc-Bridging-Header.h */,
+				967CA22D66734C938BD55500 /* Insomnia.m */,
+				F2066357925340E4A1A4C82B /* Insomnia.h */,
 			);
 			name = Plugins;
 			path = Robot/Plugins;
@@ -545,6 +550,7 @@
 				A4D8106FF69140E0877D6582 /* PluginGetMediaDevices.swift in Sources */,
 				37B65BF74FFB433B982A1764 /* PluginUtils.swift in Sources */,
 				2886C5DA79FF41FCA877A0CE /* PluginMediaStreamRenderer.swift in Sources */,
+				56A4239E49E94DC791B8AF47 /* Insomnia.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

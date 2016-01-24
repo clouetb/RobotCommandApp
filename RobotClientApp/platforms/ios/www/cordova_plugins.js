@@ -13,6 +13,13 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.iosrtc"
         ]
+    },
+    {
+        "file": "plugins/nl.x-services.plugins.insomnia/www/Insomnia.js",
+        "id": "nl.x-services.plugins.insomnia.Insomnia",
+        "clobbers": [
+            "window.plugins.insomnia"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -20,7 +27,8 @@ module.exports.metadata =
 {
     "cordova-plugin-whitelist": "1.0.0",
     "cordova-plugin-device": "1.0.1",
-    "cordova-plugin-iosrtc": "2.0.1"
+    "cordova-plugin-iosrtc": "2.0.1",
+    "nl.x-services.plugins.insomnia": "4.0.1"
 }
 // BOTTOM OF METADATA
 });

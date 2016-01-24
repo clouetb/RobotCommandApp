@@ -6,8 +6,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-
+class RootWebSocketHandler(tornado.websocket.WebSocketHandler):
     # Needed to fetch the authenticated user
     def get_current_user(self):
         return self.get_secure_cookie("user")
@@ -19,21 +18,61 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         # Fail if not authenticated
         if not self.current_user:
             log.warning("Unauthorized user with request %s", self.request)
-            self.set_status(401)
-            self.finish("Unauthorized")
+            self.set_status(403)
+            self.finish("Forbidden")
             return
         log.debug("User is %s", self.get_current_user())
         # Continue websocket handshake
-        super(WebSocketHandler, self).get(*args, **kwargs)
+        super(RootWebSocketHandler, self).get(*args, **kwargs)
 
     # Needed for making secure cross-domain websockets to work
     def check_origin(self, origin):
         return True
 
     def open(self, *args):
-        log.debug("Connection incomming")
+        log.debug("Connection incoming")
         self.stream.set_nodelay(True)
 
+
+class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
+    clients = []
+
+    def open(self):
+        logging.info("SignallingWebSocket opened from %s", self.request.remote_ip)
+        SignallingWebSocketHandler.clients.append(self)
+        super(SignallingWebSocketHandler, self).open()
+
+    def on_message(self, message):
+        logging.debug("got message from %s: %s", self.request.remote_ip, message)
+        logging.info("Client are %s", SignallingWebSocketHandler.clients)
+        if not message.startswith("ping"):
+            for client in SignallingWebSocketHandler.clients:
+                if client is not self:
+                    logging.debug("Writing msg to %s", message)
+                    client.write_message(message)
+
+    def on_close(self):
+        logging.info("SignallingWebSocket closed")
+        SignallingWebSocketHandler.clients.remove(self)
+
+
+class LocalSignallingWebSocketHandler(SignallingWebSocketHandler):
+    # Overridden for dealing with authentication
+    @tornado.web.asynchronous
+    def get(self, *args, **kwargs):
+        if not ((str(self.request.remote_ip) == "127.0.0.1") or (str(self.request.remote_ip) == "::1")):
+            log.warning("Unauthorized user with request %s", self.request)
+            self.set_status(403)
+            self.finish("Forbidden")
+            return
+        super(LocalSignallingWebSocketHandler, self).get(*args, **kwargs)
+
+
+class RemoteSignallingWebSocketHandler(SignallingWebSocketHandler, RootWebSocketHandler):
+    pass
+
+
+class ControlWebSocketHandler(RootWebSocketHandler):
     def ping(self, value):
         log.debug("Received a ping responding")
         self.write_message("Pong")

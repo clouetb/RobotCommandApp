@@ -7,7 +7,7 @@ NAME=chromium-browser
 PIDFILE=/var/run/$NAME/$NAME.pid
 LOGFILE=/var/log/$NAME/$NAME.log
 DAEMON=/usr/bin/chromium-browser
-DAEMON_ARGS="--kiosk https://robot-pi.bclouet.eu:8888/index.html"
+DAEMON_ARGS="--kiosk https://robot-pi.bclouet.eu/robot/index.html"
 
 export PATH="${PATH:+$PATH:}/usr/sbin:/sbin:/usr/bin"
 export DISPLAY=:0
@@ -35,6 +35,11 @@ case "$1" in
         WID=$(xdotool search --onlyvisible --class chromium|head -1)
         xdotool windowactivate $WID
         xdotool key ctrl+F5
+        ;;
+  debug)
+        WID=$(xdotool search --onlyvisible --class chromium|head -1)
+        xdotool windowactivate $WID
+        xdotool key ctrl+shift+i
         ;;
   *)
         echo "Usage: "$1" {start|stop|restart}"

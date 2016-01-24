@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Robot Display UI</title>
+        <style type="text/css">
+            body {
+                margin-top: 0px;
+                margin-left: 0px;
+                background-color: #000000;
+            }
+            canvas {
+                position: relative;
+                top: 0;
+                left: 0;
+            }
+            #remote {
+                z-index: 0;
+                position: relative;
+                top: 0;
+                left: 0;
+                object-fit: cover;
+            }
+            #local {
+                z-index: 1;
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                -webkit-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
+            #container {
+                position: relative;
+                left: 0;
+                top: 0;                
+            }
+             ::-webkit-scrollbar {
+                display: none;
+            }
+        </style>
+        <script src="js/jquery.min.js"></script>
+		<script src="js/adapter.js"></script>
+        <script src="js/layout.js"></script>
+        <script src="js/callee.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="videos">
+				<video id="remote" autoplay></video>
+				<video id="local" autoplay muted></video>
+			</div>
+		</div>
+        <script type="text/javascript">
+window.localVideo = document.getElementById("local");
+window.remoteVideo = document.getElementById("remote");
+window.signallingWebsocket = null;
+
+window.addEventListener("load", function() {
+    console.log("Robot app >>> DOM loaded");
+        initDeviceGeometryAndElements();
+        resizeElements();
+        init();
+}, false); // load
+        </script>
+	</body>
+</html>

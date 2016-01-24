@@ -15,6 +15,10 @@
                         {
                             "xml": "<feature name=\"iosrtcPlugin\"><param name=\"ios-package\" value=\"iosrtcPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Insomnia\"><param name=\"ios-package\" value=\"Insomnia\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -123,6 +127,9 @@
             "PACKAGE_NAME": "eu.bclouet.robot.client.app"
         },
         "cordova-plugin-iosrtc": {
+            "PACKAGE_NAME": "eu.bclouet.robot.client.app"
+        },
+        "nl.x-services.plugins.insomnia": {
             "PACKAGE_NAME": "eu.bclouet.robot.client.app"
         }
     },

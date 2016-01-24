@@ -21,6 +21,9 @@
         <param name="ios-package" value="iosrtcPlugin" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="Insomnia">
+        <param name="ios-package" value="Insomnia" />
+    </feature>
     <allow-intent href="itms:*" />
     <allow-intent href="itms-apps:*" />
     <preference name="Orientation" value="all" />

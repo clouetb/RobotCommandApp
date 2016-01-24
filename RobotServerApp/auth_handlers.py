@@ -6,7 +6,7 @@ import json
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
-redirect_url = "https://robot-pi.bclouet.eu:8888/auth"
+redirect_url = "https://robot-pi.bclouet.eu/auth"
 
 
 class LoginHandler(tornado.web.RequestHandler,
@@ -20,7 +20,7 @@ class LoginHandler(tornado.web.RequestHandler,
             # 1st call : user is NOT authenticated and should be sent to the auth page at Google
             log.debug("Unauthenticated user, sending to auth page, then sending to '%s'", self.get_argument("next", "/ (default param)"))
             # Save the URL the user was asking for
-            self.set_cookie("next", self.get_argument("next", "/index.html"))
+            self.set_cookie("next", self.get_argument("next", "/controller/index.html"))
             # Send user to the auth page
             yield self.authorize_redirect(
                 # Callback URL (should be this same URL)
@@ -54,6 +54,7 @@ class LoginHandler(tornado.web.RequestHandler,
             log.debug("Current user is %s", user)
             # Save the username as a secure cookie
             self.set_secure_cookie("user", user["email"])
+            self.settings["roles"]
             # Send the user to the URL he intended to reach before having to authenticate
             next_url = self.get_cookie("next")
             log.debug("Next url is %s", next_url)

@@ -228,8 +228,13 @@
 
 		// Avoid iOS WebSocket crash.
 		setTimeout(function () {
-			self.ws.send(data);
-		}, 10);
+            try {
+			    self.ws.send(data);
+            } catch (e) {
+                console.log("WS Hack exception was : " + e + " Reloading...");
+			    location.reload(true);
+            }
+		});
 	};
 
 	FakeWebSocket.prototype.close = function (code, reason) {

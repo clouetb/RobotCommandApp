@@ -1,7 +1,7 @@
 "use strict";
 /*jslint vars: true, plusplus: false, devel: true, nomen: true, indent: 4, maxerr: 50 */
 /*global define */
-var worker = new Worker("control_worker.js");
+var worker = new Worker("js/control_worker.js");
 // Set of fingers
 var leftFinger = {
     // Used for later identification

@@ -22,12 +22,10 @@ server {
 
     location /protected_controller/ {
         internal;
-#        root /home/pi/RobotCommandApp/RobotServerApp/static;
     }
 
     location /protected_robot/ {
         internal;
-#        root /home/pi/RobotCommandApp/RobotServerApp/static;
     }
 
     location /websocket_control {

@@ -35,10 +35,14 @@ onmessage = function (e) {
 setInterval(function() {
     var d = new Date();
     //postMessage("Speed L " + leftFinger.offset + " R " + rightFinger.offset + " " + d.yyyymmdd());
-    socket.send(JSON.stringify({
-        "speed": [leftFinger.offset,
-                  rightFinger.offset]
-    }));
+    try {
+        socket.send(JSON.stringify({
+            "speed": [leftFinger.offset,
+                      rightFinger.offset]
+        }));
+    } catch (e) {
+        console.log("CW exception was : " + e);
+    }
 }, Math.round(1000 / fps));
 
 function initCommunication() {

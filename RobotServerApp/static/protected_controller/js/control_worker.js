@@ -19,7 +19,7 @@ var rightFinger = {
     active: false
 };
 // Number of times a second the position of the fingers will be sent
-var fps = 10;
+var fps = 1;
 // Socket to the server
 var socket = null;
 

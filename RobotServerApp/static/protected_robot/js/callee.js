@@ -9,7 +9,15 @@ var remoteStream;
 var isStarted;
 var turnReady;
 
-var pc_config = {'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]};
+var pc_config;
+
+$.getJSON("https://" + location.host + "/turn_configuration", function (data){
+    console.log("Return : " + JSON.stringify(data));    
+    pc_config = data;
+});
+
+//var pc_config = {'iceServers': [{'url': 'stun:stun.l.google.com:19302'}]};
+console.log("Turn configuration : " + JSON.stringify(pc_config));
 
 var pc_constraints = {
 	'optional': [

@@ -106,61 +106,63 @@ localport = 0
 port_forwarding = None
 
 
-def enable_port_forwarding():
-    try:
-        # Create UPnP client
-        global port_forwarding
-        port_forwarding = miniupnpc.UPnP(multicastif, minissdpdsocket, discoverdelay, localport)
-        # Discover internet gateway device
-        log.debug("Discovering : %s detected", port_forwarding.discover())
-        # Select internet gateway
-        port_forwarding.selectigd()
-        # Enabling port forwarding
-        for port in ports_mapping:
-            log.debug("About to setup %s: %s port mapping", port["name"], port)
-            result = port_forwarding.addportmapping(port["local_port"],
-                                           port["protocol"],
-                                           port["target_addr"] or port_forwarding.lanaddr,
-                                           port["external_port"],
-                                           port["comment"], "")
-            log.info("Setting up %s port mapping : %s %s -> %s:%s %s",
-                     port["name"],
-                     port["protocol"],
-                     port["external_port"],
-                     port["target_addr"] or port_forwarding.lanaddr,
-                     port["local_port"],
-                     result)
-    except Exception, e:
-        log.error("Exception : %s", e)
+class PortForwarder:
 
+    def __init__(self):
+            # Create UPnP client
+        self.upnpc = miniupnpc.UPnP(multicastif, minissdpdsocket, discoverdelay, localport)
 
-def disable_port_forwarding():
-    global port_forwarding
-    try:
-        for port in ports_mapping:
-            log.debug("About to delete %s: %s port mapping", port["name"], port)
-            result = port_forwarding.deleteportmapping(port["external_port"],
-                                           port["protocol"])
-            log.info("Deleted %s port mapping : %s -> %s:%s %s", port["protocol"],
-                     port["external_port"],
-                     port["target_addr"] or port_forwarding.lanaddr,
-                     port["local_port"],
-                     result)
-    except Exception, e:
-        log.error("Exception : %s", e)
+    def enable_port_forwarding(self):
+        try:
+            # Discover internet gateway device
+            log.debug("Discovering : %s detected", self.upnpc.discover())
+            # Select internet gateway
+            self.upnpc.selectigd()
+            # Enabling port forwarding
+            for port in ports_mapping:
+                log.debug("About to setup %s: %s port mapping", port["name"], port)
+                result = self.upnpc.addportmapping(port["local_port"],
+                                               port["protocol"],
+                                               port["target_addr"] or self.upnpc.lanaddr,
+                                               port["external_port"],
+                                               port["comment"], "")
+                log.info("Setting up %s port mapping : %s %s -> %s:%s %s",
+                         port["name"],
+                         port["protocol"],
+                         port["external_port"],
+                         port["target_addr"] or self.upnpc.lanaddr,
+                         port["local_port"],
+                         result)
+        except Exception, e:
+            log.error("Exception : %s", e)
 
+    def disable_port_forwarding(self):
+        try:
+            for port in ports_mapping:
+                log.debug("About to delete %s: %s port mapping", port["name"], port)
+                result = self.upnpc.deleteportmapping(port["external_port"],
+                                               port["protocol"])
+                log.info("Deleted %s port mapping : %s -> %s:%s %s", port["protocol"],
+                         port["external_port"],
+                         port["target_addr"] or self.upnpc.lanaddr,
+                         port["local_port"],
+                         result)
+        except Exception, e:
+            log.error("Exception : %s", e)
 
-def setup_external_ip():
-    nat_type, current_external_ip, external_port = stun.get_ip_info()
-    log.info("Nat type %s, external IP %s, external port %s", nat_type, current_external_ip, external_port)
-    dns_registered_ip = dns.resolver.query("robot-pi.bclouet.eu")[0]
-    if str(current_external_ip) != str(dns_registered_ip):
-        log.info("DNS need change. Currently on DNS '%s', current external IP '%s'",
-                 dns_registered_ip, current_external_ip)
-    else:
-        log.info("DNS and current external IP ('%s') are the same, no DNS change needed", current_external_ip)
+    def setup_external_ip(self, hostname=None):
+        nat_type, current_external_ip, external_port = stun.get_ip_info()
+        log.info("Nat type %s, external IP %s, external port %s", nat_type, current_external_ip, external_port)
+        dns_registered_ip = dns.resolver.query(hostname)[0]
+        if str(current_external_ip) != str(dns_registered_ip):
+            log.info("DNS need change. Currently on DNS '%s', current external IP '%s'",
+                     dns_registered_ip, current_external_ip)
+        else:
+            log.info("DNS and current external IP ('%s') are the same, no DNS change needed", current_external_ip)
 
-
-def get_network_adresses(port_forwarding):
-    return port_forwarding.lanaddr, stun.get_ip_info()[1]
+    def get_network_adresses(self):
+        """
+        :return: (internal ip, external ip)
+        """
+        return self.upnpc.lanaddr, stun.get_ip_info()[1]
 

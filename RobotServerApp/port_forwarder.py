@@ -6,6 +6,7 @@ import dns.resolver
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
 
+# List of ports to be forwarded
 ports_mapping = [
     {
         "name": "Nginx HTTP frontend",
@@ -102,17 +103,17 @@ minissdpdsocket = None
 discoverdelay = 200
 localport = 0
 
-#
-port_forwarding = None
-
 
 class PortForwarder:
 
     def __init__(self):
-            # Create UPnP client
+        # Create UPnP client
         self.upnpc = miniupnpc.UPnP(multicastif, minissdpdsocket, discoverdelay, localport)
 
     def enable_port_forwarding(self):
+        """
+        Opens and forwards ports used by the robot (see configuration)
+        """
         try:
             # Discover internet gateway device
             log.debug("Discovering : %s detected", self.upnpc.discover())
@@ -121,6 +122,7 @@ class PortForwarder:
             # Enabling port forwarding
             for port in ports_mapping:
                 log.debug("About to setup %s: %s port mapping", port["name"], port)
+                # Adds a port forwarding
                 result = self.upnpc.addportmapping(port["local_port"],
                                                port["protocol"],
                                                port["target_addr"] or self.upnpc.lanaddr,
@@ -137,6 +139,9 @@ class PortForwarder:
             log.error("Exception : %s", e)
 
     def disable_port_forwarding(self):
+        """
+        Closes ports opened and forwarded
+        """
         try:
             for port in ports_mapping:
                 log.debug("About to delete %s: %s port mapping", port["name"], port)
@@ -151,6 +156,10 @@ class PortForwarder:
             log.error("Exception : %s", e)
 
     def setup_external_ip(self, hostname=None):
+        """
+        Detects and change hostname if needed (not fully implemented so far)
+        :param hostname:the current hostname of the robot
+        """
         nat_type, current_external_ip, external_port = stun.get_ip_info()
         log.info("Nat type %s, external IP %s, external port %s", nat_type, current_external_ip, external_port)
         dns_registered_ip = dns.resolver.query(hostname)[0]

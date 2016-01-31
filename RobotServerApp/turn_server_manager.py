@@ -31,9 +31,15 @@ class TurnServerManager:
         self.other_options = other_options
         self.raw_cmdline = None
         self.process = None
+        # Save instance for later access by the ConfigurationRequestHandler
         TurnServerManager.instance = self
 
     def get_cmdline(self):
+        """
+        Builds the turnserver command line using the constructor's parameters.
+        If one parameter is None, its option is ignored.
+        :return: the command line build using the parameters from the constructor
+        """
         cmdline = "/usr/bin/turnserver"
         if self.other_options:
             cmdline += " " + self.other_options + " "
@@ -59,8 +65,16 @@ class TurnServerManager:
         self.process.terminate()
 
     def get_signalling_configuration(self):
+        """
+        Computes signalling configuration according to the turn REST
+        API (https://github.com/coturn/coturn/wiki/turnserver)
+        :return: a JSON formatted configuration
+        """
+        # use the secret provided to the turn server for digesting messages
         digester = hmac.new(self.secret, digestmod=hashlib.sha1)
+        # username gives the validity of the session (86400 secs = 24 hours)
         username = str(int(round(time.time())) + 86400)
+        # use the username as part of the hash
         digester.update(username)
         password = base64.b64encode(digester.digest()).decode("ascii")
         return json.dumps(dict(iceServers=[dict(url="stun:stun.l.google.com:19302"),

@@ -11,10 +11,11 @@ import tornado.websocket
 
 from tornado.options import define, options, parse_command_line
 
-from port_forwarder import enable_port_forwarding, disable_port_forwarding, setup_external_ip
+from port_forwarder import PortForwarder
 from websocket_handler import ControlWebSocketHandler, SignallingWebSocketHandler, LocalSignallingWebSocketHandler
 from auth_handlers import LoginHandler, LogoutHandler
-from request_handlers import ProtectedHandler, NoAuthHandler
+from request_handlers import ProtectedHandler, NoAuthHandler, ConfigurationRequestHandler
+from turn_server_manager import TurnServerManager
 
 # Current dir
 dirname = os.path.dirname(__file__)
@@ -35,7 +36,7 @@ with open(os.path.join(dirname, "rolesdb.json")) as json_data:
 # Settings
 settings = dict(
     compress_response=True,
-    cookie_secret=base64.b64encode(os.urandom(50)).decode('ascii'),
+    cookie_secret=base64.b64encode(os.urandom(50)).decode("ascii"),
     login_url="/auth",
     debug=True,
     xsrf_cookies=True,
@@ -54,12 +55,17 @@ handlers = [
     (r"/robot/(.*)", NoAuthHandler),
     (r"/websocket_control", ControlWebSocketHandler),
     (r"/websocket_robot_signaling", LocalSignallingWebSocketHandler),
-    (r"/websocket_controller_signaling", SignallingWebSocketHandler)
+    (r"/websocket_controller_signaling", SignallingWebSocketHandler),
+    (r"/turn_configuration", ConfigurationRequestHandler)
 ]
 
 app = tornado.web.Application(
     handlers,
     **settings)
+
+turn_server = None
+port_forwarder = None
+hostname = "robot-pi.bclouet.eu"
 
 
 def set_exit_handler(func):
@@ -69,7 +75,8 @@ def set_exit_handler(func):
 def on_exit(sig, func=None):
     log.info("Shutting down application")
     log.debug("Disabling port forwarding")
-    disable_port_forwarding()
+    turn_server.stop_turn_server()
+    port_forwarder.disable_port_forwarding()
     log.debug("Stopping Tornado server")
     tornado.ioloop.IOLoop.instance().stop()
     log.info("Application stopped")
@@ -88,7 +95,17 @@ if __name__ == '__main__':
     upstream_http_server.listen(8888)
     ssl_http_server.listen(8443, "127.0.0.1")
     log.debug("Enabling port forwarding")
-    enable_port_forwarding()
-    setup_external_ip()
+    port_forwarder = PortForwarder()
+    port_forwarder.enable_port_forwarding()
+    port_forwarder.setup_external_ip(hostname=hostname)
+    internal_ip, external_ip = port_forwarder.get_network_adresses()
+    turn_server = TurnServerManager(cert=os.path.join(ssl_stuff_dir, "startssl.crt"),
+                                    key=os.path.join(ssl_stuff_dir, "startssl.key"),
+                                    internal_ip=internal_ip,
+                                    external_ip=external_ip,
+                                    realm=hostname,
+                                    secret=base64.b64encode(os.urandom(50)).decode('ascii'),
+                                    other_options="--lt-cred-mech --fingerprint --pidfile /tmp/turnserver.pid")
+    turn_server.start_turn_server()
     log.info("Starting Tornado server")
     tornado.ioloop.IOLoop.instance().start()

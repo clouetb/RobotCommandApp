@@ -16,6 +16,7 @@ from websocket_handler import ControlWebSocketHandler, SignallingWebSocketHandle
 from auth_handlers import LoginHandler, LogoutHandler
 from request_handlers import ProtectedHandler, NoAuthHandler, ConfigurationRequestHandler
 from turn_server_manager import TurnServerManager
+from display_manager import wake_up_display
 
 # Current dir
 dirname = os.path.dirname(__file__)
@@ -108,4 +109,5 @@ if __name__ == '__main__':
                                     other_options="--lt-cred-mech --fingerprint --pidfile /tmp/turnserver.pid")
     turn_server.start_turn_server()
     log.info("Starting Tornado server")
+    tornado.ioloop.PeriodicCallback(wake_up_display, 1000 * 60 * 5).start()
     tornado.ioloop.IOLoop.instance().start()

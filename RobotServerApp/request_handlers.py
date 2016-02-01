@@ -8,10 +8,19 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-class ProtectedHandler(tornado.web.RequestHandler):
+class RootHandler(tornado.web.RequestHandler):
+
+    def is_local(self):
+        if not ((str(self.request.headers.get('X-Real-Ip')) == "127.0.0.1") or
+                    (str(self.request.headers.get('X-Real-Ip')) == "::1")):
+            return False
+        return True
+
     # Needed to fetch the authenticated user
     def get_current_user(self):
         return self.get_secure_cookie("user")
+
+class ProtectedHandler(RootHandler):
 
     @tornado.web.asynchronous
     def get(self, *args, **kwargs):
@@ -21,33 +30,37 @@ class ProtectedHandler(tornado.web.RequestHandler):
             self.set_status(403)
             self.finish("Forbidden")
             return
-        log.debug("Authorized request %s -> %s", self.request.uri, self.request.uri.replace("/controller/", "/protected_controller/"))
-        self.set_header('X-Accel-Redirect', self.request.uri.replace("/controller/", "/protected_controller/"))
+        log.debug("Authorized request %s -> %s",
+                  self.request.uri,
+                  self.request.uri.replace("/controller/", "/protected_controller/"))
+        self.set_header('X-Accel-Redirect',
+                        self.request.uri.replace("/controller/", "/protected_controller/"))
         self.finish()
 
 
-class NoAuthHandler(tornado.web.RequestHandler):
+class NoAuthHandler(RootHandler):
 
+    @tornado.web.asynchronous
     def get(self, path, include_body=True):
-        if not ((str(self.request.remote_ip) == "127.0.0.1") or (str(self.request.remote_ip) == "::1")):
+        log.debug("Non authenticated request : %s", self.request)
+        if not self.is_local():
             log.warning("Unauthorized user with request %s", self.request)
             self.set_status(403)
             self.finish("Forbidden")
             return
-        log.debug("Authorized request %s -> %s", self.request.uri, self.request.uri.replace("/robot/", "/protected_robot/"))
-        self.set_header('X-Accel-Redirect', self.request.uri.replace("/robot/", "/protected_robot/"))
+        log.debug("Authorized request %s -> %s",
+                  self.request.uri,
+                  self.request.uri.replace("/robot/", "/protected_robot/"))
+        self.set_header('X-Accel-Redirect',
+                        self.request.uri.replace("/robot/", "/protected_robot/"))
         self.finish()
 
 
-class ConfigurationRequestHandler(tornado.web.RequestHandler):
+class ConfigurationRequestHandler(RootHandler):
 
-    def get_current_user(self):
-        return self.get_secure_cookie("user")
-
+    @tornado.web.asynchronous
     def get(self, *args, **kwargs):
-        if not ((str(self.request.remote_ip) == "127.0.0.1") or
-                (str(self.request.remote_ip) == "::1") or
-                self.current_user):
+        if not (self.is_local() or self.current_user):
             log.warning("Unauthorized user with request %s", self.request)
             self.set_status(403)
             self.finish("Forbidden")

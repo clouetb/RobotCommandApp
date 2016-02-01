@@ -1,7 +1,6 @@
 import json
 import logging
 import tornado.websocket
-import display_manager
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -38,10 +37,15 @@ class RootWebSocketHandler(tornado.websocket.WebSocketHandler):
 class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = []
 
+    def is_local(self):
+        if not ((str(self.request.headers.get('X-Real-Ip')) == "127.0.0.1") or
+                    (str(self.request.headers.get('X-Real-Ip')) == "::1")):
+            return False
+        return True
+
     def open(self):
         logging.info("SignallingWebSocket opened from %s", self.request.remote_ip)
         SignallingWebSocketHandler.clients.append(self)
-        display_manager.wake_up_display()
         super(SignallingWebSocketHandler, self).open()
 
     def on_message(self, message):
@@ -62,7 +66,7 @@ class LocalSignallingWebSocketHandler(SignallingWebSocketHandler):
     # Overridden for dealing with authentication
     @tornado.web.asynchronous
     def get(self, *args, **kwargs):
-        if not ((str(self.request.remote_ip) == "127.0.0.1") or (str(self.request.remote_ip) == "::1")):
+        if not self.is_local():
             log.warning("Unauthorized user with request %s", self.request)
             self.set_status(403)
             self.finish("Forbidden")

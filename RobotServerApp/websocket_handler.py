@@ -37,6 +37,14 @@ class RootWebSocketHandler(tornado.websocket.WebSocketHandler):
 
 class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = []
+    
+    # Equality operators used for keeping the clients array tidy
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def is_local(self):
         if not ((str(self.request.headers.get('X-Real-Ip')) == "127.0.0.1") or
@@ -46,7 +54,15 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def open(self):
         logging.info("SignallingWebSocket opened from %s", self.request.remote_ip)
-        SignallingWebSocketHandler.clients.append(self)
+        connection_to_recycle = False
+        for index, item in enumerate(SignallingWebSocketHandler.clients):
+            if item == self:
+                SignallingWebSocketHandler.clients[index] = self
+                connection_to_recycle = True
+
+        if not connection_to_recycle:
+            SignallingWebSocketHandler.clients.append(self)
+
         display_manager.wake_up_display()
         super(SignallingWebSocketHandler, self).open()
 

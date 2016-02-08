@@ -1,6 +1,7 @@
 import json
 import logging
 import tornado.websocket
+import display_manager
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -46,6 +47,7 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         logging.info("SignallingWebSocket opened from %s", self.request.remote_ip)
         SignallingWebSocketHandler.clients.append(self)
+        display_manager.wake_up_display()
         super(SignallingWebSocketHandler, self).open()
 
     def on_message(self, message):

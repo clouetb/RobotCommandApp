@@ -30,7 +30,7 @@ ssl_ctx.load_cert_chain(os.path.join(ssl_stuff_dir, "startssl.crt"),
 # Load OAuth2 settings in google_oauth2_settings
 with open(os.path.join(dirname, "robot-pi-google-oauth2.json")) as json_data:
     google_oauth2_settings = json.load(json_data)
-
+# TODO : implement true user management
 with open(os.path.join(dirname, "rolesdb.json")) as json_data:
     roles_settings = json.load(json_data)
 
@@ -96,10 +96,13 @@ if __name__ == '__main__':
     upstream_http_server.listen(8888)
     ssl_http_server.listen(8443, "127.0.0.1")
     log.debug("Enabling port forwarding")
+    # Setup network for exposing the ports to the outside world
     port_forwarder = PortForwarder()
     port_forwarder.enable_port_forwarding()
     port_forwarder.setup_external_ip(hostname=hostname)
+    # Information used by the TurnServer
     internal_ip, external_ip = port_forwarder.get_network_adresses()
+    # Used for starting the turn server process with security
     turn_server = TurnServerManager(cert=os.path.join(ssl_stuff_dir, "startssl.crt"),
                                     key=os.path.join(ssl_stuff_dir, "startssl.key"),
                                     internal_ip=internal_ip,
@@ -109,5 +112,6 @@ if __name__ == '__main__':
                                     other_options="--lt-cred-mech --fingerprint --pidfile /tmp/turnserver.pid")
     turn_server.start_turn_server()
     log.info("Starting Tornado server")
+    # Periodically check if the display must be woken up
     tornado.ioloop.PeriodicCallback(wake_up_display, 1000 * 60 * 5).start()
     tornado.ioloop.IOLoop.instance().start()

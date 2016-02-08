@@ -1,6 +1,7 @@
 import json
 import logging
 import tornado.websocket
+
 import display_manager
 
 log = logging.getLogger(__name__)
@@ -37,11 +38,11 @@ class RootWebSocketHandler(tornado.websocket.WebSocketHandler):
 
 class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = []
-    
+
     # Equality operators used for keeping the clients array tidy
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__)
+                and other.request.headers.get('X-Forwarded-For') == self.request.headers.get('X-Forwarded-For'))
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -59,7 +60,7 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
             if item == self:
                 SignallingWebSocketHandler.clients[index] = self
                 connection_to_recycle = True
-
+                logging.info("SignallingWebSocket recycled connection from %s")
         if not connection_to_recycle:
             SignallingWebSocketHandler.clients.append(self)
 
@@ -68,7 +69,7 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         logging.debug("got message from %s: %s", self.request.remote_ip, message)
-        logging.info("Client are %s", SignallingWebSocketHandler.clients)
+        logging.info("Clients are %d %s", len(SignallingWebSocketHandler.clients), SignallingWebSocketHandler.clients)
         if not message.startswith("ping"):
             for client in SignallingWebSocketHandler.clients:
                 if client is not self:

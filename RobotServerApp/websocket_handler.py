@@ -38,8 +38,8 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
     clients = []
 
     def is_local(self):
-        if not ((str(self.request.headers.get('X-Real-Ip')) == "127.0.0.1") or
-                    (str(self.request.headers.get('X-Real-Ip')) == "::1")):
+        if not ((str(self.request.headers.get('X-Forwarded-For')) == "127.0.0.1") or
+                    (str(self.request.headers.get('X-Forwarded-For')) == "::1")):
             return False
         return True
 

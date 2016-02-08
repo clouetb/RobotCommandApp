@@ -8,7 +8,8 @@ log.setLevel(logging.DEBUG)
 
 
 def wake_up_display():
-    if len(websocket_handler.SignallingWebSocketHandler.clients) == 2:
+    # Wake up display only if there is a client connected (the robot is the first client)
+    if len(websocket_handler.SignallingWebSocketHandler.clients) > 1:
         cmdline = "xset -display :0 dpms force on"
         args = shlex.split(cmdline)
         log.debug("Waking up display with cmdline : %s", args)

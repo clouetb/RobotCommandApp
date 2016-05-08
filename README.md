@@ -31,6 +31,6 @@ Aims at getting a Raspberry PI to act as a robot with video.
 
 ###For reducing video latency (which is currently around 1 sec.)
 - Enable h.264 on both sides
--- See if the RaspiCam is the solution as it provides a way to spit h.264 directly
--- See if iosrtc is actually offering h.264 as a codec
--- See if a new version of Chromium is required
+- See if the RaspiCam is the solution as it provides a way to spit h.264 directly
+- See if iosrtc is actually offering h.264 as a codec
+- See if a new version of Chromium is required

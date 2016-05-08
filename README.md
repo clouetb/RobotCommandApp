@@ -14,26 +14,23 @@ Aims at getting a Raspberry PI to act as a robot with video.
 ##Requires on the mobile side
 - Cordova
 - The ios RTC plugin https://github.com/eface2face/cordova-plugin-iosrtc
-- SimpleWebRTC https://github.com/andyet/SimpleWebRTC
 
 ##Todo
 ###Implement deployment tooling
-- On the mobile UI
-- Basic deployment automation on the RPi (see if we can get a more efficient process through Fabric http://docs.fabfile.org/en/1.10/)
+- See if we can get interesting things from docker or http://robotpkg.openrobots.org/
 
 ###For the mobile UI
-- See how to implement sliders for driving the tank threads
-    ~~Deal with the freeze of the events when fingers are touching the screen~~ Should have been adressed so far.
-- Implement the correct lifecycle for re-enabling connection when leaving/re-entering the app
+- Implement the correct lifecycle for re-enabling connection when leaving/re-entering the app --> found a solution but looks brittle
+- Find a way to enable HTML elements on the mobile UI (see https://github.com/eface2face/cordova-plugin-iosrtc/issues/38, there is a PR pending...)
 
 ###For the Rpi UI
-- Implement startup UI (See http://blogs.wcode.org/2013/09/howto-boot-your-raspberry-pi-into-a-fullscreen-browser-kiosk/)
 - Enable sound output (input is provided via the webcam)
-- Enable some kind of authentication for the tornado server (must be supported on the client side)
-    ~~Maybe a certificate based authentication ?~~ 
-
-    See if OAuth could be eligible http://www.tornadoweb.org/en/stable/auth.html and https://github.com/oauth-io/oauth-phonegap)
 
 ###For the infrastructure
-- Become independent of the public signalmaster for security reasons
-- Deal with firewalls traversal for enabling communication while not on the same network (https://github.com/miniupnp/miniupnp/)?
+- Deal with firewalls traversal for enabling communication while not on the same network (https://github.com/miniupnp/miniupnp/)? --> See if this works that well...
+
+###For reducing video latency (which is currently around 1 sec.)
+- Enable h.264 on both sides
+-- See if the RaspiCam is the solution as it provides a way to spit h.264 directly
+-- See if iosrtc is actually offering h.264 as a codec
+-- See if a new version of Chromium is required

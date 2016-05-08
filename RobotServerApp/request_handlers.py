@@ -5,7 +5,7 @@ import logging
 from turn_server_manager import TurnServerManager
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 class RootHandler(tornado.web.RequestHandler):

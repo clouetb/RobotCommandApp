@@ -8,9 +8,11 @@ import json
 import base64
 import tornado.httpserver
 import tornado.websocket
+import RPi.GPIO as GPIO
 
 from tornado.options import define, options, parse_command_line
 
+from tank import Tank
 from port_forwarder import PortForwarder
 from websocket_handler import ControlWebSocketHandler, SignallingWebSocketHandler, LocalSignallingWebSocketHandler
 from auth_handlers import LoginHandler, LogoutHandler
@@ -48,22 +50,6 @@ settings = dict(
     roles=roles_settings
 )
 
-# Application routes
-handlers = [
-    (r"/auth", LoginHandler),
-    (r"/logout", LogoutHandler),
-    (r"/controller/(.*)", ProtectedHandler),
-    (r"/robot/(.*)", NoAuthHandler),
-    (r"/websocket_control", ControlWebSocketHandler),
-    (r"/websocket_robot_signaling", LocalSignallingWebSocketHandler),
-    (r"/websocket_controller_signaling", SignallingWebSocketHandler),
-    (r"/turn_configuration", ConfigurationRequestHandler)
-]
-
-app = tornado.web.Application(
-    handlers,
-    **settings)
-
 turn_server = None
 port_forwarder = None
 hostname = "robot-pi.bclouet.eu"
@@ -80,21 +66,43 @@ def on_exit(sig, func=None):
     port_forwarder.disable_port_forwarding()
     log.debug("Stopping Tornado server")
     tornado.ioloop.IOLoop.instance().stop()
+    log.debug("Cleaning-up GPIO")
+    GPIO.cleanup()
     log.info("Application stopped")
     sys.exit(0)
 
-# Create a secure http listener
-ssl_http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-upstream_http_server = tornado.httpserver.HTTPServer(app)
 
 if __name__ == '__main__':
-    parse_command_line()
-    set_exit_handler(on_exit)
     logging.getLogger("tornado.web").setLevel(logging.DEBUG)
     log = logging.getLogger("tornado.application")
     log.setLevel(logging.DEBUG)
+    parse_command_line()
+    set_exit_handler(on_exit)
+    # Tank with default values
+    my_tank = Tank()
+
+    # Application routes
+    handlers = [
+        (r"/auth", LoginHandler),
+        (r"/logout", LogoutHandler),
+        (r"/controller/(.*)", ProtectedHandler),
+        (r"/robot/(.*)", NoAuthHandler),
+        (r"/websocket_control", ControlWebSocketHandler, dict(_tank=my_tank)),
+        (r"/websocket_robot_signaling", LocalSignallingWebSocketHandler),
+        (r"/websocket_controller_signaling", SignallingWebSocketHandler),
+        (r"/turn_configuration", ConfigurationRequestHandler)
+    ]
+
+    app = tornado.web.Application(
+        handlers,
+        **settings)
+
+    # Create a secure http listener
+    ssl_http_server = tornado.httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    upstream_http_server = tornado.httpserver.HTTPServer(app)
     upstream_http_server.listen(8888)
     ssl_http_server.listen(8443, "127.0.0.1")
+
     log.debug("Enabling port forwarding")
     # Setup network for exposing the ports to the outside world
     port_forwarder = PortForwarder()
@@ -114,4 +122,5 @@ if __name__ == '__main__':
     log.info("Starting Tornado server")
     # Periodically check if the display must be woken up
     tornado.ioloop.PeriodicCallback(wake_up_display, 1000 * 60 * 5).start()
+    tornado.ioloop.PeriodicCallback(my_tank.run, 100).start()
     tornado.ioloop.IOLoop.instance().start()

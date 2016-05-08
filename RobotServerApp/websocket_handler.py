@@ -5,7 +5,7 @@ import tornado.websocket
 import display_manager
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 class RootWebSocketHandler(tornado.websocket.WebSocketHandler):
@@ -69,7 +69,7 @@ class SignallingWebSocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         logging.debug("got message from %s: %s", self.request.remote_ip, message)
-        logging.info("Clients are %d %s", len(SignallingWebSocketHandler.clients), SignallingWebSocketHandler.clients)
+        logging.debug("Clients are %d %s", len(SignallingWebSocketHandler.clients), SignallingWebSocketHandler.clients)
         if not message.startswith("ping"):
             for client in SignallingWebSocketHandler.clients:
                 if client is not self:
@@ -98,12 +98,16 @@ class RemoteSignallingWebSocketHandler(SignallingWebSocketHandler, RootWebSocket
 
 
 class ControlWebSocketHandler(RootWebSocketHandler):
+    def initialize(self, _tank):
+        self.tank = _tank
+
     def ping(self, value):
         log.debug("Received a ping responding")
         self.write_message("Pong")
 
     def set_speed(self, value):
         log.debug("Changing speed to L %s R %s", value[0], value[1])
+        self.tank.set_speed(value[0], value[1])
         self.write_message("Setting speed to L %d R %d" % (value[0], value[1]))
 
     message_types = {

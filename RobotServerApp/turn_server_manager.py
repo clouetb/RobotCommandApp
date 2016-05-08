@@ -53,12 +53,13 @@ class TurnServerManager:
             cmdline += (" --realm %s " % self.realm)
         if self.secret:
             cmdline += (" --static-auth-secret %s " % self.secret)
+        cmdline += " --syslog"
         return cmdline
 
     def start_turn_server(self):
         args = shlex.split(self.raw_cmdline or self.get_cmdline())
         log.debug("Turn server process arguments : %s", args)
-        self.process = subprocess.Popen(args, stdout=subprocess.PIPE)
+        self.process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         log.info("Turn server process started")
 
     def stop_turn_server(self):

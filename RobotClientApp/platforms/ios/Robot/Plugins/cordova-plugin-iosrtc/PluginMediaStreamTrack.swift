@@ -19,8 +19,13 @@ class PluginMediaStreamTrack : NSObject, RTCMediaStreamTrackDelegate {
 	}
 
 
+	deinit {
+		NSLog("PluginMediaStreamTrack#deinit()")
+	}
+
+
 	func run() {
-		NSLog("PluginMediaStreamTrack#run()")
+		NSLog("PluginMediaStreamTrack#run() [kind:%@, id:%@]", String(self.kind), String(self.id))
 
 		self.rtcMediaStreamTrack.delegate = self
 	}
@@ -41,7 +46,7 @@ class PluginMediaStreamTrack : NSObject, RTCMediaStreamTrackDelegate {
 		eventListener: (data: NSDictionary) -> Void,
 		eventListenerForEnded: () -> Void
 	) {
-		NSLog("PluginMediaStreamTrack#setListener()")
+		NSLog("PluginMediaStreamTrack#setListener() [kind:%@, id:%@]", String(self.kind), String(self.id))
 
 		self.eventListener = eventListener
 		self.eventListenerForEnded = eventListenerForEnded
@@ -62,16 +67,25 @@ class PluginMediaStreamTrack : NSObject, RTCMediaStreamTrackDelegate {
 
 
 	func setEnabled(value: Bool) {
-		NSLog("PluginMediaStreamTrack#setEnabled() [value:\(value)]")
+		NSLog("PluginMediaStreamTrack#setEnabled() [kind:%@, id:%@, value:%@]",
+			String(self.kind), String(self.id), String(value))
 
 		self.rtcMediaStreamTrack.setEnabled(value)
 	}
 
 
+	// TODO: No way to stop the track.
+	// Check https://github.com/eface2face/cordova-plugin-iosrtc/issues/140
 	func stop() {
-		NSLog("PluginMediaStreamTrack#stop()")
+		NSLog("PluginMediaStreamTrack#stop() [kind:%@, id:%@]", String(self.kind), String(self.id))
 
-		self.rtcMediaStreamTrack.setState(RTCTrackStateEnded)
+		NSLog("PluginMediaStreamTrack#stop() | stop() not implemented (see: https://github.com/eface2face/cordova-plugin-iosrtc/issues/140")
+
+		// NOTE: There is no setState() anymore
+		// self.rtcMediaStreamTrack.setState(RTCTrackStateEnded)
+
+		// Let's try setEnabled(false), but it also fails.
+		self.rtcMediaStreamTrack.setEnabled(false)
 	}
 
 
@@ -83,7 +97,8 @@ class PluginMediaStreamTrack : NSObject, RTCMediaStreamTrackDelegate {
 	func mediaStreamTrackDidChange(rtcMediaStreamTrack: RTCMediaStreamTrack!) {
 		let state_str = PluginRTCTypes.mediaStreamTrackStates[self.rtcMediaStreamTrack.state().rawValue] as String!
 
-		NSLog("PluginMediaStreamTrack | state changed [state:\(state_str), enabled:\(self.rtcMediaStreamTrack.isEnabled() ? true : false)]")
+		NSLog("PluginMediaStreamTrack | state changed [kind:%@, id:%@, state:%@, enabled:%@]",
+			String(self.kind), String(self.id), String(state_str), String(self.rtcMediaStreamTrack.isEnabled()))
 
 		if self.eventListener != nil {
 			self.eventListener!(data: [

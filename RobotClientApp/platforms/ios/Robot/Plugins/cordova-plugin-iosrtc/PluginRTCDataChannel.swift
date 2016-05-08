@@ -61,7 +61,7 @@ class PluginRTCDataChannel : NSObject, RTCDataChannelDelegate {
 		)
 
 		if self.rtcDataChannel == nil {
-			NSLog("PluginRTCDataChannel#init() | rtcPeerConnection.createDataChannelWithLabel() failed !!!")
+			NSLog("PluginRTCDataChannel#init() | rtcPeerConnection.createDataChannelWithLabel() failed")
 			return
 		}
 
@@ -79,6 +79,11 @@ class PluginRTCDataChannel : NSObject, RTCDataChannelDelegate {
 				"bufferedAmount": self.rtcDataChannel!.bufferedAmount
 			]
 		])
+	}
+
+
+	deinit {
+		NSLog("PluginRTCDataChannel#deinit()")
 	}
 
 
@@ -182,7 +187,7 @@ class PluginRTCDataChannel : NSObject, RTCDataChannelDelegate {
 	func channelDidChangeState(channel: RTCDataChannel!) {
 		let state_str = PluginRTCTypes.dataChannelStates[self.rtcDataChannel!.state.rawValue] as String!
 
-		NSLog("PluginRTCDataChannel | state changed [state:\(state_str)]")
+		NSLog("PluginRTCDataChannel | state changed [state:%@]", String(state_str))
 
 		if self.eventListener != nil {
 			self.eventListener!(data: [

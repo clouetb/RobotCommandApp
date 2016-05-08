@@ -17,7 +17,7 @@
  under the License.
  */
 //
-// Prefix header for all source files of the 'Robot Client App' target in the 'Robot Client App' project
+// Prefix header for all source files of the 'Robot' target in the 'Robot' project
 //
 
 #ifdef __OBJC__

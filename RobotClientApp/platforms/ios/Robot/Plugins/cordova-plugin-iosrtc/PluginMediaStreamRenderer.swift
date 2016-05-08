@@ -3,7 +3,7 @@ import AVFoundation
 
 
 class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
-	var webView: UIWebView
+	var webView: UIView
 	var eventListener: (data: NSDictionary) -> Void
 	var elementView: UIView
 	var videoView: RTCEAGLVideoView
@@ -13,7 +13,7 @@ class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
 
 
 	init(
-		webView: UIWebView,
+		webView: UIView,
 		eventListener: (data: NSDictionary) -> Void
 	) {
 		NSLog("PluginMediaStreamRenderer#init()")
@@ -37,6 +37,11 @@ class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
 		self.elementView.layer.masksToBounds = true
 
 		self.videoView.userInteractionEnabled = false
+	}
+
+
+	deinit {
+		NSLog("PluginMediaStreamRenderer#deinit()")
 	}
 
 
@@ -143,7 +148,10 @@ class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
 		let clip = data.objectForKey("clip") as? Bool ?? true
 		let borderRadius = data.objectForKey("borderRadius") as? Float ?? 0
 
-		NSLog("PluginMediaStreamRenderer#refresh() [elementLeft:\(elementLeft), elementTop:\(elementTop), elementWidth:\(elementWidth), elementHeight:\(elementHeight), videoViewWidth:\(videoViewWidth), videoViewHeight:\(videoViewHeight), visible:\(visible), opacity:\(opacity), zIndex:\(zIndex), mirrored:\(mirrored), clip:\(clip), borderRadius:\(borderRadius)]")
+		NSLog("PluginMediaStreamRenderer#refresh() [elementLeft:%@, elementTop:%@, elementWidth:%@, elementHeight:%@, videoViewWidth:%@, videoViewHeight:%@, visible:%@, opacity:%@, zIndex:%@, mirrored:%@, clip:%@, borderRadius:%@]",
+			String(elementLeft), String(elementTop), String(elementWidth), String(elementHeight),
+			String(videoViewWidth), String(videoViewHeight), String(visible), String(opacity), String(zIndex),
+			String(mirrored), String(clip), String(borderRadius))
 
 		let videoViewLeft: Float = (elementWidth - videoViewWidth) / 2
 		let videoViewTop: Float = (elementHeight - videoViewHeight) / 2
@@ -228,7 +236,8 @@ class PluginMediaStreamRenderer : NSObject, RTCEAGLVideoViewDelegate {
 
 
 	func videoView(videoView: RTCEAGLVideoView!, didChangeVideoSize size: CGSize) {
-		NSLog("PluginMediaStreamRenderer | video size changed [width:\(size.width), height:\(size.height)]")
+		NSLog("PluginMediaStreamRenderer | video size changed [width:%@, height:%@]",
+			String(size.width), String(size.height))
 
 		self.eventListener(data: [
 			"type": "videoresize",

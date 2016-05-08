@@ -1,12 +1,4 @@
 {
-    "cordova-plugin-iosrtc": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-iosrtc"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-device": {
         "source": {
             "type": "registry",
@@ -27,6 +19,15 @@
         "source": {
             "type": "git",
             "url": "https://github.com/EddyVerbruggen/Insomnia-PhoneGap-Plugin.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-iosrtc": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/eface2face/cordova-plugin-iosrtc",
             "subdir": "."
         },
         "is_top_level": true,

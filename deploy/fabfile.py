@@ -48,6 +48,11 @@ def stop_tornado():
         run("./robot-pi stop")
 
 
+def run_gpio():
+    with cd(APP_ROOT):
+        run("python gpio")
+
+
 def restart_tornado():
     stop_tornado()
     start_tornado()

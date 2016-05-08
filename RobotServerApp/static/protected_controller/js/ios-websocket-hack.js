@@ -234,7 +234,7 @@
                 console.log("WS Hack exception was : " + e + " Reloading...");
 			    location.reload(true);
             }
-		});
+		}, 500);
 	};
 
 	FakeWebSocket.prototype.close = function (code, reason) {

@@ -77,16 +77,20 @@ window.addEventListener("load", function() {
             ws.send("disconnect");
         }, false); // pause
 
-        // if iOS devices
-        if (window.device.platform === "iOS") {
-            cordova.plugins.iosrtc.debug.enable("*");
-            // Pollute global namespace with WebRTC stuff.
-            cordova.plugins.iosrtc.registerGlobals();
-            console.log("Robot app >>> Globals registered");
-        }
-        initDeviceGeometryAndElements();
-        resizeElements();
-        init();
+        ws.send("disconnect");
+        // Try to reset robot's state
+		setTimeout(function () {
+            // if iOS devices
+            if (window.device.platform === "iOS") {
+                cordova.plugins.iosrtc.debug.enable("*");
+                // Pollute global namespace with WebRTC stuff.
+                cordova.plugins.iosrtc.registerGlobals();
+                console.log("Robot app >>> Globals registered");
+            }
+            initDeviceGeometryAndElements();
+            resizeElements();
+            init();
+		}, 1000);
         
     }, false); // device ready
 }, false); // load

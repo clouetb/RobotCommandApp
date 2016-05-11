@@ -28,6 +28,7 @@ Aims at getting a Raspberry PI to act as a robot with video.
 
 ###For the infrastructure
 - Deal with firewalls traversal for enabling communication while not on the same network (https://github.com/miniupnp/miniupnp/)? --> See if this works that well...
+- Deal with update of the IP address when changed
 
 ###For reducing video latency (which is currently around 1 sec.)
 - Enable h.264 on both sides
